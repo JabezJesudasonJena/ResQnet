@@ -1,0 +1,44 @@
+body{
+    font-family: Verdana;
+    font-size: 2em;
+    background-color: gray;
+}
+
+#div1{
+    height: 75px;
+    width: fill;
+    background-color: lightskyblue;
+    border-radius: 7px;
+    position:relative;
+}
+
+.btns{
+    width: 100px;
+    margin-top: 13px;
+    margin-left:10px;
+    height: 40px;
+    border-radius: 5px;
+    font-family:monospace;
+    font-size: 30px;
+}
+#head1{
+    margin-top: 100px;
+    margin-left: 17%;
+}
+
+#div11{
+    margin-left: 87%;
+    margin-top: -43px;
+}
+
+.btns11{
+    width: 100px;
+    height: 33px;
+    border-radius: 5px;
+    font-size: 22px;
+}
+
+
+
+
+
