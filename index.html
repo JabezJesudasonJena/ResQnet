@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQnet Disaster Alert & Weather Info</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="aaa.png" alt="ResQnet Logo" class="logo">
+            <h1>ResQnet Disaster Alert & Weather Updates</h1>
+            <div class="header-text"></div>
+        </div>
+    </header>
+    
+    <main>
+        <section id="search-container">
+            <input type="text" id="search-box" placeholder="Enter location...">
+            <button id="search-btn">Search</button>
+        </section>
+
+        <section id="map-container">
+            
+            <h2>Live Map</h2>
+            <div id="map"></div>
+        </section>
+
+        <section id="weather-info">
+            <h2>Current Weather</h2>
+            <img id="weather-icon" src="" alt="Weather Icon">
+            <p id="temperature">Temperature: --</p>
+            <p id="humidity">Humidity: --</p>
+            <p id="description">Description: --</p>
+        </section>
+
+        <section id="alerts">
+            <h2>Disaster Alerts</h2>
+            <div id="alert-message"></div>
+            <p id="alert-message">No alerts at the moment.</p>
+        </section>
+
+        <section id="shelters">
+            <h2>Emergency Shelters</h2>
+            <p id="shelter-message">No shelters found.</p>
+            <ul id="shelter-list"></ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Disaster Alert System</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="main.js" defer></script>
+</body>
+</html>
