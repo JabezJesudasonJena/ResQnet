@@ -37,11 +37,95 @@ function getWeatherData(location) {
 }
 
 function getDisasterData(location) {
-    document.getElementById("alert-message").textContent = "Disaster data will be displayed here.";
-}
+    if (!location || typeof location.lat === "undefined" || typeof location.lng === "undefined") {
+        console.error("Invalid location object:", location);
+        return;
+    }
 
+    const url = `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Earthquake Data:", data);
+
+            const alertsDiv = document.getElementById("alert-message");
+            if (alertsDiv) {
+                alertsDiv.innerHTML = "";
+
+                if (data.features && data.features.length > 0) {
+                    const earthquakes = data.features;
+                    const relevantEarthquakes = earthquakes.filter(earthquake => {
+                        const earthquakeLat = earthquake.geometry.coordinates[1];
+                        const earthquakeLon = earthquake.geometry.coordinates[0];
+                        const distance = calculateDistance(location.lat, location.lng, earthquakeLat, earthquakeLon);
+                        return distance <= 200;
+                    });
+
+                    if (relevantEarthquakes.length > 0) {
+                        relevantEarthquakes.forEach(earthquake => {
+                            const earthquakeDiv = document.createElement("div");
+                            earthquakeDiv.textContent = `Location: ${earthquake.properties.place}, Magnitude: ${earthquake.properties.mag}`;
+                            alertsDiv.appendChild(earthquakeDiv);
+                        });
+                    } else {
+                        alertsDiv.textContent = "No recent earthquakes found near this location.";
+                    }
+                } else {
+                    alertsDiv.textContent = "No earthquake data available.";
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching earthquake data:", error);
+        });
+}
 function getShelterData(location) {
-    document.getElementById("shelter-message").textContent = "Shelter data will be displayed here.";
+    const overpassApiUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node["amenity"="shelter"](around:5000,${location.lat},${location.lng});out;`;
+
+    fetch(overpassApiUrl)
+        .then(response => {
+            if (!response.ok) {
+                return Promise.reject(new Error(`HTTP error! status: ${response.status}`));
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Shelter Data:", data);
+
+            const sheltersDiv = document.getElementById("shelter-message");
+            if (sheltersDiv) {
+                sheltersDiv.innerHTML = ""; // Clear previous results
+
+                if (data.elements && data.elements.length > 0) {
+                    data.elements.forEach(shelter => {
+                        const shelterDiv = document.createElement("div");
+                        shelterDiv.className = "shelter";
+
+                        // Shelter Name
+                        const name = document.createElement("h3");
+                        name.textContent = shelter.tags && shelter.tags.name ? shelter.tags.name : "Unnamed Shelter";
+                        shelterDiv.appendChild(name);
+
+                        // Shelter Location
+                        const location = document.createElement("p");
+                        location.textContent = `Location: Lat ${shelter.lat}, Lon ${shelter.lon}`;
+                        shelterDiv.appendChild(location);
+
+                        sheltersDiv.appendChild(shelterDiv);
+                    });
+                } else {
+                    sheltersDiv.textContent = "No shelters found near this location.";
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching shelter data:", error);
+            const sheltersDiv = document.getElementById("shelter-message");
+            if (sheltersDiv) {
+                sheltersDiv.textContent = "Error fetching shelter data.";
+            }
+        });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -108,7 +192,7 @@ document.getElementById("search-btn").addEventListener("click", function() {
             alert("Error fetching location. Please try again later.");
         });
 });
-
+/*
 function getDisasterData(location) {
     const url = `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson`;
 
@@ -153,7 +237,152 @@ function getDisasterData(location) {
             }
         });
 }
+*/
+/*function getShelterData(location) {
+    const overpassApiUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node["amenity"="shelter"](around:5000,${location.lat},${location.lng});out;`;
 
+    fetch(overpassApiUrl)
+        .then(response => {
+            if (!response.ok) {
+                return Promise.reject(new Error(`HTTP error! status: ${response.status}`));
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Shelter Data:", data);
+
+            const sheltersDiv = document.getElementById("shelter-message");
+            if (sheltersDiv) {
+                sheltersDiv.innerHTML = ""; // Clear previous results
+
+                if (data.elements && data.elements.length > 0) {
+                    data.elements.forEach(shelter => {
+                        const shelterDiv = document.createElement("div");
+                        shelterDiv.className = "shelter";
+
+                        // Shelter Name
+                        const name = document.createElement("h3");
+                        name.textContent = shelter.tags && shelter.tags.name ? shelter.tags.name : "Unnamed Shelter";
+                        shelterDiv.appendChild(name);
+
+                        // Shelter Location
+                        const location = document.createElement("p");
+                        location.textContent = `Location: Lat ${shelter.lat}, Lon ${shelter.lon}`;
+                        shelterDiv.appendChild(location);
+
+                        // Shelter Photo
+                        const photo = document.createElement("img");
+                        photo.src = `https://via.placeholder.com/300?text=Shelter+Image`; // Placeholder image
+                        photo.alt = shelter.tags && shelter.tags.name ? shelter.tags.name : "Shelter Image";
+                        photo.className = "shelter-photo";
+                        shelterDiv.appendChild(photo);
+
+                        sheltersDiv.appendChild(shelterDiv);
+                    });
+                } else {
+                    sheltersDiv.textContent = "No shelters found near this location.";
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching shelter data:", error);
+            const sheltersDiv = document.getElementById("shelter-message");
+            if (sheltersDiv) {
+                sheltersDiv.textContent = "Error fetching shelter data.";
+            }
+        });
+}
+*/
+
+
+function getShelterData(location) {
+    const overpassApiUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node["amenity"="shelter"](around:5000,${location.lat},${location.lng});out;`;
+
+    fetch(overpassApiUrl)
+        .then(response => {
+            if (!response.ok) {
+                return Promise.reject(new Error(`HTTP error! status: ${response.status}`));
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Shelter Data:", data);
+
+            const sheltersDiv = document.getElementById("shelter-message");
+            if (sheltersDiv) {
+                sheltersDiv.innerHTML = ""; // Clear previous results
+
+                if (data.elements && data.elements.length > 0) {
+                    data.elements.forEach(shelter => {
+                        const shelterDiv = document.createElement("div");
+                        shelterDiv.className = "shelter";
+
+                        // Shelter Name
+                        const name = document.createElement("h3");
+                        name.textContent = shelter.tags && shelter.tags.name ? shelter.tags.name : "Unnamed Shelter";
+                        shelterDiv.appendChild(name);
+
+                        // Shelter Location
+                        const location = document.createElement("p");
+                        location.textContent = `Location: Lat ${shelter.lat}, Lon ${shelter.lon}`;
+                        shelterDiv.appendChild(location);
+
+                        // Fetch and Add Shelter Photo
+                        const photo = document.createElement("img");
+                        photo.className = "shelter-photo";
+                        photo.alt = shelter.tags && shelter.tags.name ? shelter.tags.name : "Shelter Image";
+
+                        if (shelter.tags && shelter.tags.name) {
+                            fetchWikimediaImage(shelter.tags.name)
+                                .then(imageUrl => {
+                                    photo.src = imageUrl || `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`; 
+                                })
+                                .catch(() => {
+                                    photo.src = `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`; 
+                                });
+                        } else {
+                            photo.src = `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`; 
+                        }
+
+                        shelterDiv.appendChild(photo);
+                        sheltersDiv.appendChild(shelterDiv);
+                    });
+                } else {
+                    sheltersDiv.textContent = "No shelters found near this location.";
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching shelter data:", error);
+            const sheltersDiv = document.getElementById("shelter-message");
+            if (sheltersDiv) {
+                sheltersDiv.textContent = "Error fetching shelter data.";
+            }
+        });
+}
+
+function fetchWikimediaImage(query) {
+    const wikimediaApiUrl = `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=original&titles=${encodeURIComponent(
+        query
+    )}`;
+
+    return fetch(wikimediaApiUrl)
+        .then(response => {
+            if (!response.ok) {
+                return Promise.reject(new Error(`HTTP error! status: ${response.status}`));
+            }
+            return response.json();
+        })
+        .then(data => {
+            const pages = data.query.pages;
+            const page = Object.values(pages)[0];
+            return page.original ? page.original.source : null; 
+        })
+        .catch(error => {
+            console.error("Error fetching Wikimedia image:", error);
+            return null; 
+        });
+}
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; 
@@ -176,4 +405,15 @@ function deg2rad(deg) {
 
 calculateDistance();
 deg2rad();
+console.log("Location passed to getDisasterData:", location);
+getDisasterData(location);
 getDisasterData()
+
+
+
+
+
+
+
+
+console.log("Hello, World!");
