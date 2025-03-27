@@ -306,45 +306,31 @@ function getShelterData(location) {
             return response.json();
         })
         .then(data => {
-            console.log("Shelter Data:", data);
-
             const sheltersDiv = document.getElementById("shelter-message");
+
             if (sheltersDiv) {
-                sheltersDiv.innerHTML = ""; // Clear previous results
+                sheltersDiv.innerHTML = ""; 
 
                 if (data.elements && data.elements.length > 0) {
                     data.elements.forEach(shelter => {
                         const shelterDiv = document.createElement("div");
                         shelterDiv.className = "shelter";
 
-                        // Shelter Name
-                        const name = document.createElement("h3");
+                        const name = document.createElement("a");
                         name.textContent = shelter.tags && shelter.tags.name ? shelter.tags.name : "Unnamed Shelter";
+                        name.href = `https://www.latlong.net/c/?lat=${shelter.lat}&long=${shelter.lon}`;
+                        name.target = "_blank"; 
+                        name.style.textDecoration = "none";
+                        name.style.color = "#007BFF"; 
+                        name.style.fontWeight = "bold";
+
                         shelterDiv.appendChild(name);
 
                         // Shelter Location
                         const location = document.createElement("p");
-                        location.textContent = `Location: Lat ${shelter.lat}, Lon ${shelter.lon}`;
+                        location.textContent = `Lat: ${shelter.lat}, Lon: ${shelter.lon}`;
                         shelterDiv.appendChild(location);
 
-                        // Fetch and Add Shelter Photo
-                        const photo = document.createElement("img");
-                        photo.className = "shelter-photo";
-                        photo.alt = shelter.tags && shelter.tags.name ? shelter.tags.name : "Shelter Image";
-
-                        if (shelter.tags && shelter.tags.name) {
-                            fetchWikimediaImage(shelter.tags.name)
-                                .then(imageUrl => {
-                                    photo.src = imageUrl || `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`; 
-                                })
-                                .catch(() => {
-                                    photo.src = `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`; 
-                                });
-                        } else {
-                            photo.src = `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`; 
-                        }
-
-                        shelterDiv.appendChild(photo);
                         sheltersDiv.appendChild(shelterDiv);
                     });
                 } else {
