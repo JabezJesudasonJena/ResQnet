@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoai-Chatbot</title>
+    <style>
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #eef1f7;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 420px;
+            height: 600px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        #chat-header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        #chatbox {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            margin: 0 12px;
+        }
+
+        .message .text {
+            max-width: 75%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .message.user .text {
+            background-color: #007BFF;
+            color: white;
+            border-top-right-radius: 0;
+        }
+
+        .message.bot .text {
+            background-color: #e9ecef;
+            color: #333;
+            border-top-left-radius: 0;
+        }
+
+        #input-container {
+            display: flex;
+            padding: 12px;
+            border-top: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #user-input:focus {
+            border-color: #007BFF;
+        }
+
+        #send-button {
+            padding: 12px 20px;
+            margin-left: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chat-container">
+        <div id="chat-header">EchoAI</div>
+        <div id="chat-header">Chatbot</div>
+        <div id="chatbox"></div>
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Type your message here...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatbox = document.getElementById("chatbox");
+        const userInput = document.getElementById("user-input");
+        const sendButton = document.getElementById("send-button");
+
+        function addMessage(sender, message, avatarSrc) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = sender === "user" 
+                ? `<div class="text">${message}</div><img class="avatar" src="${avatarSrc}" alt="User">`
+                : `<img class="avatar" src="${avatarSrc}" alt="Bot"><div class="text">${message}</div>`;
+
+            chatbox.appendChild(messageDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        sendButton.addEventListener("click", () => {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage("user", message, "{{ url_for('static', filename='images/x.png') }}");
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                addMessage("bot", data.reply, "{{ url_for('static', filename='images/y.png') }}");
+            })
+            .catch(error => {
+                console.error("Error communicating with backend:", error);
+            });
+
+            userInput.value = "";
+        });
+    </script>
+
+</body>
+</html>
