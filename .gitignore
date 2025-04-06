@@ -1,1 +1,3 @@
-.env
+git add .gitignore
+git commit -m "Add .gitignore to hide .env file"
+git push
