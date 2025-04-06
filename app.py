@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify
+from dotenv import load_dotenv
+import os
 import requests
 import datetime
 import google.generativeai as genai
@@ -8,8 +10,13 @@ app = Flask(__name__)
 # 🌤️ OpenWeatherMap API key
 WEATHER_API_KEY = "bc4f7737be4a42b16fe20d00b6aae09a"
 
+
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+
+# Check if the API key is loaded
 # 🤖 Gemini AI setup
-genai.configure(api_key="AIzaSyAuOe3kEwT8fRQkEXkOwprhQe3311-Hmag")
+genai.configure(api_key=api_key)
 gemini_model = genai.GenerativeModel("gemini-1.5-pro-002")
 
 
