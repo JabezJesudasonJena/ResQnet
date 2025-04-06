@@ -12,7 +12,9 @@ WEATHER_API_KEY = "bc4f7737be4a42b16fe20d00b6aae09a"
 
 
 load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+#print("Loaded Gemini Key:", os.getenv("GEMINI_API_KEY"))
+
+api_key = os.getenv("gemni.env")
 
 # Check if the API key is loaded
 # 🤖 Gemini AI setup
