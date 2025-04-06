@@ -5,13 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Echoai-Chatbot</title>
     <style>
-        body {
-            font-family: "Poppins", Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+         body {
+                    font-family: "Poppins", Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: column;
+                    height: 100vh;
+                    width: 100vw; /* Use 100vw for the full width */
+                    background-color: #eef1f7;
+                    justify-content: center;
+                    align-items: center;
+                    overflow: hidden; /* Prevent scrollbars on the body */
+                }
+            
+            #chat-container {
+                display: flex;
+                flex-direction: column;
+                width: 400px;
+                height: 600px;
+                border-radius: 12px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+                background-color: #fff;
+                overflow: hidden; /* Prevent scrollbars inside the chat container */
+            }
+            
+            #chatbox {
+                flex: 1;
+                overflow-y: auto; /* Allow scrolling only for the chatbox content */
+                padding: 10px;
+                background-color: #f9f9f9;
+            }
+            
+            #input-container {
+                display: flex;
+                padding: 10px;
+                border-top: 1px solid #ddd;
+                background-color: #fff;
+            }
+            
+            #user-input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 1rem;
+            }
+            
+            #send-button {
+                padding: 10px 20px;
+                margin-left: 10px;
+                background-color: #007BFF;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 1rem;
+            }
+            
+            #send-button:hover {
+                background-color: #0056b3;
+            
             background-color: #eef1f7;
             justify-content: center;
             align-items: center;
