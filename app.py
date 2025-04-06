@@ -7,22 +7,20 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# 🌤️ OpenWeatherMap API key
+# OpenWeatherMap API key
 WEATHER_API_KEY = "bc4f7737be4a42b16fe20d00b6aae09a"
 
 
 load_dotenv()
-#print("Loaded Gemini Key:", os.getenv("GEMINI_API_KEY"))
+
 
 api_key = os.getenv("gemni.env")
 
-# Check if the API key is loaded
-# 🤖 Gemini AI setup
 genai.configure(api_key=api_key)
 gemini_model = genai.GenerativeModel("gemini-1.5-pro-002")
 
 
-# 🌤️ Weather Function
+
 def get_weather(city, api_key):
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
     complete_url = f"{base_url}appid={api_key}&q={city}&units=metric"
@@ -45,7 +43,7 @@ def get_weather(city, api_key):
         return f"Error: {e}"
 
 
-# 📅 Forecast Function
+
 def get_forecast(city, api_key):
     base_url = "http://api.openweathermap.org/data/2.5/forecast?"
     complete_url = f"{base_url}appid={api_key}&q={city}&units=metric"
@@ -68,7 +66,7 @@ def get_forecast(city, api_key):
         return f"Error: {e}"
 
 
-# 🚨 Disaster Guidance
+
 def get_disaster_guidance(message):
     message = message.lower()
     if "earthquake" in message:
@@ -120,7 +118,7 @@ def get_disaster_guidance(message):
         return "Please specify the type of disaster (earthquake, flood, cyclone, etc.)."
 
 
-# 💬 Gemini Fallback
+
 def ask_gemini(prompt):
     try:
         response = gemini_model.generate_content(prompt)
@@ -129,13 +127,13 @@ def ask_gemini(prompt):
         return f"Error from Gemini: {e}"
 
 
-# 🏠 Home Page
+
 @app.route("/")
 def home():
     return render_template("chatbot.html")
 
 
-# 💬 Chat Route
+
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message").lower()
@@ -179,6 +177,6 @@ def chat():
     return jsonify({"reply": response})
 
 
-# 🚀 Run App
+
 if __name__ == "__main__":
     app.run(debug=True)
