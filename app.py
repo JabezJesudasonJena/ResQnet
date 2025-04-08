@@ -15,7 +15,7 @@ WEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 load_dotenv()
 
 
-api_key = os.getenv("gemni.env")
+api_key = os.getenv("GEMINI_API_KEY")
 
 genai.configure(api_key=api_key)
 gemini_model = genai.GenerativeModel("gemini-1.5-pro-002")
