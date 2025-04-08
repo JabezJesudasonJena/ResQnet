@@ -8,7 +8,8 @@ import google.generativeai as genai
 app = Flask(__name__)
 
 # OpenWeatherMap API key
-WEATHER_API_KEY = "bc4f7737be4a42b16fe20d00b6aae09a"
+
+WEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
 
 load_dotenv()
