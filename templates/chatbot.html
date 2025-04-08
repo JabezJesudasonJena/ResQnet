@@ -189,44 +189,49 @@
         </div>
     </div>
 
-    <script>
-        const chatbox = document.getElementById("chatbox");
-        const userInput = document.getElementById("user-input");
-        const sendButton = document.getElementById("send-button");
+    <!-- Replace this line at the top if needed -->
+<script>
+    const chatbox = document.getElementById("chatbox");
+    const userInput = document.getElementById("user-input");
+    const sendButton = document.getElementById("send-button");
 
-        function addMessage(sender, message, avatarSrc) {
-            const messageDiv = document.createElement("div");
-            messageDiv.className = `message ${sender}`;
-            messageDiv.innerHTML = sender === "user" 
-                ? `<div class="text">${message}</div><img class="avatar" src="${avatarSrc}" alt="User">`
-                : `<img class="avatar" src="${avatarSrc}" alt="Bot"><div class="text">${message}</div>`;
+    const backendUrl = "https://resqnet-4.onrender.com/chat"; // Your Flask backend endpoint
+    const userAvatar = "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"; // example user image
+    const botAvatar = "https://cdn-icons-png.flaticon.com/512/4712/4712109.png"; // example bot image
 
-            chatbox.appendChild(messageDiv);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }
+    function addMessage(sender, message, avatarSrc) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${sender}`;
+        messageDiv.innerHTML = sender === "user" 
+            ? `<div class="text">${message}</div><img class="avatar" src="${avatarSrc}" alt="User">`
+            : `<img class="avatar" src="${avatarSrc}" alt="Bot"><div class="text">${message}</div>`;
 
-        sendButton.addEventListener("click", () => {
-            const message = userInput.value.trim();
-            if (!message) return;
+        chatbox.appendChild(messageDiv);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
 
-            addMessage("user", message, "{{ url_for('static', filename='images/x.png') }}");
+    sendButton.addEventListener("click", () => {
+        const message = userInput.value.trim();
+        if (!message) return;
 
-            fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                addMessage("bot", data.reply, "{{ url_for('static', filename='images/y.png') }}");
-            })
-            .catch(error => {
-                console.error("Error communicating with backend:", error);
-            });
+        addMessage("user", message, userAvatar);
 
-            userInput.value = "";
+        fetch(backendUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            addMessage("bot", data.reply || "No response", botAvatar);
+        })
+        .catch(error => {
+            console.error("Error communicating with backend:", error);
+            addMessage("bot", "Error connecting to backend.", botAvatar);
         });
-    </script>
 
+        userInput.value = "";
+    });
+</script>
 </body>
 </html>
