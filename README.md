@@ -1,2 +1,2 @@
-# test-rs
-This is a Disaster Management Website
+# ResQnet
+This is a Disaster Management Website integrated with Ai
